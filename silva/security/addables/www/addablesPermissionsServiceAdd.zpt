@@ -1,4 +1,7 @@
-<h1 tal:replace="structure here/manage_page_header">Header</h1>
+<tal:block tal:replace="nothing">
+Copyright (c) 2008 Infrae. All rights reserved.
+See also LICENSE.txt
+</tal:block><h1 tal:replace="structure here/manage_page_header">Header</h1>
 
 <h2 tal:define="form_title string:Add Silva SecurityAddableService"
     tal:replace="structure here/manage_form_title">Form Title</h2>

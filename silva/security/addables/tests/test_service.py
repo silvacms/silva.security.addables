@@ -1,3 +1,6 @@
+# Copyright (c) 2008 Infrae. All rights reserved.
+# See also LICENSE.txt
+# $Id$
 
 from Products.Silva.tests import SilvaTestCase
 from Products.Five import zcml
