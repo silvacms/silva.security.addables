@@ -4,7 +4,7 @@ from AddablesPermissions import SERVICE_ID
 def install(root):
     """Install method for the service.
     """
-    product = root.manage_addProduct['silva.security.addable']
+    product = root.manage_addProduct['silva.security.addables']
     product.manage_addAddablesPermissionsService(SERVICE_ID)
 
 def uninstall(root):
