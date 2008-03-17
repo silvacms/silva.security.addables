@@ -5,6 +5,13 @@ from Products.Five import zcml
 from Testing import ZopeTestCase as ztc
 
 
+def haveSilvaFind(root):
+    """Test if SilvaFind is available.
+    """
+    service  = root.service_extensions
+    return service.is_installed('SilvaFind')
+
+
 class FakeRequest(dict):
     """Dictionarish like fake request with an attribute form.
     """
@@ -46,11 +53,14 @@ class AddablesPermissionsTestCase(SilvaTestCase.SilvaTestCase):
                           'Silva Publication': 'Editor', 
                           'Silva Document': 'Author', 
                           'Silva File': 'Author', 
-                          'Silva Find': 'Editor', 
                           'Silva Ghost Folder': 'Editor', 
                           'Silva Indexer': 'Editor', 
                           'Silva Ghost': 'Author'}
+        if haveSilvaFind(root):
+            expected_perms['Silva Find'] = 'Editor'
+
         self.assertEqual(service.currentAddablesPermissions(), expected_perms)
+
 
     def test_20modification(self):
         """Modification should work.
@@ -65,10 +75,12 @@ class AddablesPermissionsTestCase(SilvaTestCase.SilvaTestCase):
                      'Silva Publication': 'Editor', 
                      'Silva Document': 'Author', 
                      'Silva File': 'Author', 
-                     'Silva Find': 'ChiefEditor', 
                      'Silva Ghost Folder': 'Editor', 
                      'Silva Indexer': 'ChiefEditor', 
                      'Silva Ghost': 'Author'}
+        if haveSilvaFind(root):
+            new_perms['Silva Find'] = 'ChiefEditor'
+        
         REQUEST = FakeRequest({'form': new_perms})
         service.manage_editAddablesPermissions(REQUEST)
 
