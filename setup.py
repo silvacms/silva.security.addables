@@ -3,9 +3,9 @@ import os
 
 version = '0.1'
 
-setup(name='silva.security.addable',
+setup(name='silva.security.addables',
       version=version,
-      description="Configure which content type is addable for Silva roles",
+      description="Configure which content type is addable for which Silva roles",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers

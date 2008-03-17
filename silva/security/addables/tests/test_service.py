@@ -22,7 +22,7 @@ class AddablesPermissionsTestCase(SilvaTestCase.SilvaTestCase):
         #import pdb ; pdb.set_trace()
 
         root = self.getRoot()
-        root.service_extensions.install('silva.security.addable')
+        root.service_extensions.install('silva.security.addables')
     
     def test_00install(self):
         """Install should provide a new service.
@@ -98,11 +98,11 @@ def test_suite():
     zcml.load_config('configure.zcml', Five)
 
     # Load our ZCML, which add the extension as a Product
-    from silva.security import addable
-    zcml.load_config('configure.zcml', addable)
+    from silva.security import addables
+    zcml.load_config('configure.zcml', addables)
 
     # Load the Zope Product
-    ztc.installPackage('silva.security.addable')
+    ztc.installPackage('silva.security.addables')
 
     # Run tests
     suite = unittest.TestSuite()

@@ -5,7 +5,7 @@ from Products.Silva.ExtensionRegistry import extensionRegistry
 
 def initialize(context):
     extensionRegistry.register(
-        'silva.security.addable', 
+        'silva.security.addables', 
         'Silva configuration utility for addables permissions', 
         context, [], install, depends_on='Silva')
 
