@@ -25,9 +25,8 @@ class AddablesPermissionsTestCase(SilvaTestCase.SilvaTestCase):
     """
 
     def afterSetUp(self):
-
-        #import pdb ; pdb.set_trace()
-
+        """After set up, install the extension.
+        """
         root = self.getRoot()
         root.service_extensions.install('silva.security.addables')
     
