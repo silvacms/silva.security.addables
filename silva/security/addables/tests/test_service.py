@@ -105,6 +105,17 @@ class AddablesPermissionsTestCase(SilvaTestCase.SilvaTestCase):
         self.assertRaises(ValueError, service.currentAddablesPermissions)
 
 
+    def test_80uninstall(self):
+        """The uninstall method should remove the service.
+        """
+        root = self.getRoot()
+        service_ext = root.service_extensions
+        service_ext.uninstall('silva.security.addables')
+        self.failIf(service_ext.is_installed('silva.security.addables'))
+        self.failIf(hasattr(root.aq_base, 'service_addablespermissions'))
+
+
+
 import unittest
 def test_suite():
     
