@@ -37,6 +37,8 @@ class AddablesPermissionsTestCase(SilvaTestCase.SilvaTestCase):
         """Install should provide a new service.
         """
         root = self.getRoot()
+        service_ext = root.service_extensions
+        self.failUnless(service_ext.is_installed('silva.security.addables'))
         self.failUnless(hasattr(root.aq_base, 'service_addablespermissions'))
 
     def test_10retrieve(self):
