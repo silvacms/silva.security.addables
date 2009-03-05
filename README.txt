@@ -1,7 +1,7 @@
 silva.security.addable
 **********************
 
-This small Sivla extension provides an interface in SMI to manage
+This small Silva extension provides an interface in SMI to manage
 which roles have the right to add which content type.
 
 It's ensure as well that current permissions are set correctly
