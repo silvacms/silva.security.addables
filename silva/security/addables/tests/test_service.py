@@ -6,7 +6,16 @@ from Products.Silva.tests import SilvaTestCase
 from Products.Five import zcml
 
 from Testing import ZopeTestCase as ztc
+from Testing.ZopeTestCase.layer import onsetup as ZopeLiteLayerSetup
 
+@ZopeLiteLayerSetup
+def installPackage(name):
+    """This used to be executed at start time, but not anymore ...
+    (see Silva 2.2 test setup).
+
+    This is required for Zope 2.11.
+    """
+    ztc.installPackage(name)
 
 def haveSilvaFind(root):
     """Test if SilvaFind is available.
@@ -32,7 +41,7 @@ class AddablesPermissionsTestCase(SilvaTestCase.SilvaTestCase):
         """
         root = self.getRoot()
         root.service_extensions.install('silva.security.addables')
-    
+
     def test_00install(self):
         """Install should provide a new service.
         """
@@ -50,15 +59,15 @@ class AddablesPermissionsTestCase(SilvaTestCase.SilvaTestCase):
         expected_roles = ('Author', 'Editor', 'ChiefEditor', 'Manager')
         self.assertEqual(service.manageableRoles(), expected_roles)
 
-        expected_perms = {'Silva AutoTOC': 'Author', 
-                          'Silva Link': 'Author', 
-                          'Silva Folder': 'Author', 
-                          'Silva Image': 'Author', 
-                          'Silva Publication': 'Editor', 
-                          'Silva Document': 'Author', 
-                          'Silva File': 'Author', 
-                          'Silva Ghost Folder': 'Editor', 
-                          'Silva Indexer': 'Editor', 
+        expected_perms = {'Silva AutoTOC': 'Author',
+                          'Silva Link': 'Author',
+                          'Silva Folder': 'Author',
+                          'Silva Image': 'Author',
+                          'Silva Publication': 'Editor',
+                          'Silva Document': 'Author',
+                          'Silva File': 'Author',
+                          'Silva Ghost Folder': 'Editor',
+                          'Silva Indexer': 'Editor',
                           'Silva Ghost': 'Author'}
         if haveSilvaFind(root):
             expected_perms['Silva Find'] = 'Editor'
@@ -72,19 +81,19 @@ class AddablesPermissionsTestCase(SilvaTestCase.SilvaTestCase):
         root = self.getRoot()
         service = root.service_addablespermissions
 
-        new_perms = {'Silva AutoTOC': 'Manager', 
-                     'Silva Link': 'Author', 
-                     'Silva Folder': 'Author', 
-                     'Silva Image': 'Author', 
-                     'Silva Publication': 'Editor', 
-                     'Silva Document': 'Author', 
-                     'Silva File': 'Author', 
-                     'Silva Ghost Folder': 'Editor', 
-                     'Silva Indexer': 'ChiefEditor', 
+        new_perms = {'Silva AutoTOC': 'Manager',
+                     'Silva Link': 'Author',
+                     'Silva Folder': 'Author',
+                     'Silva Image': 'Author',
+                     'Silva Publication': 'Editor',
+                     'Silva Document': 'Author',
+                     'Silva File': 'Author',
+                     'Silva Ghost Folder': 'Editor',
+                     'Silva Indexer': 'ChiefEditor',
                      'Silva Ghost': 'Author'}
         if haveSilvaFind(root):
             new_perms['Silva Find'] = 'ChiefEditor'
-        
+
         REQUEST = FakeRequest({'form': new_perms})
         service.manage_editAddablesPermissions(REQUEST)
 
@@ -118,7 +127,7 @@ class AddablesPermissionsTestCase(SilvaTestCase.SilvaTestCase):
 
 import unittest
 def test_suite():
-    
+
     # Load Five ZCML
     from Products import Five
     zcml.load_config('meta.zcml', Five)
@@ -129,7 +138,7 @@ def test_suite():
     zcml.load_config('configure.zcml', addables)
 
     # Load the Zope Product
-    ztc.installPackage('silva.security.addables')
+    installPackage('silva.security.addables')
 
     # Run tests
     suite = unittest.TestSuite()
