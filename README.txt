@@ -19,11 +19,11 @@ following section::
 
   [instance]
 
-  eggs = ...
-        silva.pas.base
+  eggs +=
+        silva.security.addables
 
-  zcml = ...
-        silva.pas.base
+  zcml += 
+        silva.security.addables
 
 If the section ``instance`` wasn't already in the configuration file,
 pay attention to re-copy values for ``eggs`` and ``zcml`` from the
