@@ -1,7 +1,12 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope"
-    xmlns:five="http://namespaces.zope.org/five">
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:five="http://namespaces.zope.org/five"
+   xmlns:grok="http://namespaces.zope.org/grok">
 
-  <five:registerPackage package="." initialize=".initialize" />
+  <include package="silva.core.conf" />
+  <include package="silva.core.services" />
+
+  <five:registerPackage package="." />
+  <grok:grok package="." />
 
 </configure>

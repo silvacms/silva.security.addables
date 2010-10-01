@@ -2,40 +2,49 @@
 # See also LICENSE.txt
 # $Id$
 
-from OFS.SimpleItem import SimpleItem
 from AccessControl import ClassSecurityInfo
 from AccessControl.requestmethod import postonly
-from Globals import InitializeClass
+from App.class_init import InitializeClass
 
-
+from Products.Silva import roleinfo
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
-from Products.Silva.helpers import add_and_edit
+from five import grok
+from silva.core import conf as silvaconf
+from silva.core.services.base import SilvaService
+from silva.core.interfaces import ISilvaLocalService
 
-SERVICE_ID = 'service_addablespermissions'
 
-class AddablesPermissionsService(SimpleItem):
+class IAddablesPermissionsService(ISilvaLocalService):
+    pass
+
+
+class AddablesPermissionsService(SilvaService):
     """Service to configure which content type is addable.
     """
+    grok.implements(IAddablesPermissionsService)
 
+    default_service_identifier = 'service_addablespermissions'
     meta_type = 'Silva Addables Permissions Service'
     title = 'Silva Addables Permissions Service'
+
+    silvaconf.icon('AddablesPermissions.gif')
 
     security = ClassSecurityInfo()
 
     manage_options = (
         {'label':'Edit', 'action':'manage_editForm'},
-        ) + SimpleItem.manage_options
-    
-    security.declareProtected('View management screens', 
+        ) + SilvaService.manage_options
+
+    security.declareProtected('View management screens',
                               'manage_editForm')
     manage_editForm = PageTemplateFile(
-        'www/addablesPermissionsServiceEdit', globals(),  
+        'www/addablesPermissionsServiceEdit', globals(),
         __name__='manage_editForm')
 
 
-    security.declareProtected('View management screens', 
-                              'manage_editAddablesPermissions')
+    security.declareProtected(
+        'View management screens', 'manage_editAddablesPermissions')
     @postonly
     def manage_editAddablesPermissions(self, REQUEST):
         """Edit permissions.
@@ -57,16 +66,15 @@ class AddablesPermissionsService(SimpleItem):
             root.manage_permission(permission, current, 0)
 
 
-    security.declareProtected('View management screens', 
-                              'manageableRoles')
+    security.declareProtected(
+        'View management screens', 'manageableRoles')
     def manageableRoles(self):
         """Return roles for which we manage permissions.
         """
-        root = self.get_root()
-        return root.sec_get_roles()[4:]
+        return roleinfo.AUTHOR_ROLES
 
-    security.declareProtected('View management screens', 
-                              'currentAddablesPermissions')
+    security.declareProtected(
+        'View management screens', 'currentAddablesPermissions')
     def currentAddablesPermissions(self):
         """Return current permission settings.
         """
@@ -88,19 +96,5 @@ class AddablesPermissionsService(SimpleItem):
             settings[type] = winner
         return settings
 
-    def __init__(self, id):
-        self.id = id
-
 
 InitializeClass(AddablesPermissionsService)
-
-manage_addAddablesPermissionsServiceForm = PageTemplateFile(
-       "www/addablesPermissionsServiceAdd",  globals(),
-       __name__ = 'manage_addAddablesPermissionsServiceForm')
-
-def manage_addAddablesPermissionsService(self, id, REQUEST=None):
-    """Add the security addable service.
-    """
-    id = self._setObject(id, AddablesPermissionsService(id))
-    add_and_edit(self, id, REQUEST)
-    return ''
