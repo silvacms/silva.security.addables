@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2 (unreleased)
+----------------
+
+* ...
+
 1.1 (2010/10/18)
 ----------------
 
@@ -9,5 +14,4 @@ Changelog
 1.0 (2009/03/05)
 ----------------
 
-* First public release
-
+* First public release.
