@@ -2,59 +2,45 @@
 # See also LICENSE.txt
 # $Id$
 
-from Products.Silva.tests import SilvaTestCase
-from Products.Five import zcml
+import unittest
 
-from Testing import ZopeTestCase as ztc
-from Testing.ZopeTestCase.layer import onsetup as ZopeLiteLayerSetup
+from Acquisition import aq_base
+from Products.Silva.testing import SilvaLayer
+from zope.publisher.browser import TestRequest
+import silva.security.addables
 
-@ZopeLiteLayerSetup
-def installPackage(name):
-    """This used to be executed at start time, but not anymore ...
-    (see Silva 2.2 test setup).
+class SilvaSecurityAddablesLayer(SilvaLayer):
+    default_packages = SilvaLayer.default_packages + [
+        'silva.security.addables',
+        ]
 
-    This is required for Zope 2.11.
-    """
-    ztc.installPackage(name)
-
-def haveSilvaFind(root):
-    """Test if SilvaFind is available.
-    """
-    service  = root.service_extensions
-    return service.is_installed('SilvaFind')
+FunctionalLayer = SilvaSecurityAddablesLayer(
+    silva.security.addables, zcml_file='configure.zcml')
 
 
-class FakeRequest(dict):
-    """Dictionarish like fake request with an attribute form.
-    """
-
-    @property
-    def form(self):
-        return self['form']
-
-class AddablesPermissionsTestCase(SilvaTestCase.SilvaTestCase):
+class AddablesPermissionsTestCase(unittest.TestCase):
     """Tests for silva.security.addables.
     """
+    layer = FunctionalLayer
 
-    def afterSetUp(self):
+    def setUp(self):
         """After set up, install the extension.
         """
-        root = self.getRoot()
-        root.service_extensions.install('silva.security.addables')
+        self.root = self.layer.get_application()
+        factory = self.root.manage_addProduct['silva.security.addables']
+        factory.manage_addAddablesPermissionsService()
 
-    def test_00install(self):
+    def test_service(self):
         """Install should provide a new service.
         """
-        root = self.getRoot()
-        service_ext = root.service_extensions
-        self.failUnless(service_ext.is_installed('silva.security.addables'))
-        self.failUnless(hasattr(root.aq_base, 'service_addablespermissions'))
+        self.assertTrue(
+            hasattr(aq_base(self.root),
+                    'service_addablespermissions'))
 
-    def test_10retrieve(self):
+    def test_retrieve(self):
         """There is utilities which retrieve current settings.
         """
-        root = self.getRoot()
-        service = root.service_addablespermissions
+        service = self.root.service_addablespermissions
 
         expected_roles = ('Author', 'Editor', 'ChiefEditor', 'Manager')
         self.assertEqual(service.manageableRoles(), expected_roles)
@@ -66,20 +52,18 @@ class AddablesPermissionsTestCase(SilvaTestCase.SilvaTestCase):
                           'Silva Publication': 'Editor',
                           'Silva Document': 'Author',
                           'Silva File': 'Author',
+                          'Silva Find': 'Editor',
                           'Silva Ghost Folder': 'Editor',
+                          'Silva CSV Source': 'Author',
                           'Silva Indexer': 'Editor',
                           'Silva Ghost': 'Author'}
-        if haveSilvaFind(root):
-            expected_perms['Silva Find'] = 'Editor'
 
         self.assertEqual(service.currentAddablesPermissions(), expected_perms)
 
-
-    def test_20modification(self):
+    def test_modification(self):
         """Modification should work.
         """
-        root = self.getRoot()
-        service = root.service_addablespermissions
+        service = self.root.service_addablespermissions
 
         new_perms = {'Silva AutoTOC': 'Manager',
                      'Silva Link': 'Author',
@@ -87,59 +71,32 @@ class AddablesPermissionsTestCase(SilvaTestCase.SilvaTestCase):
                      'Silva Image': 'Author',
                      'Silva Publication': 'Editor',
                      'Silva Document': 'Author',
+                     'Silva Find': 'ChiefEditor',
                      'Silva File': 'Author',
+                     'Silva CSV Source': 'Author',
                      'Silva Ghost Folder': 'Editor',
                      'Silva Indexer': 'ChiefEditor',
                      'Silva Ghost': 'Author'}
-        if haveSilvaFind(root):
-            new_perms['Silva Find'] = 'ChiefEditor'
 
-        REQUEST = FakeRequest({'form': new_perms})
-        service.manage_editAddablesPermissions(REQUEST)
+        request = TestRequest(form=new_perms, REQUEST_METHOD='POST')
+        service.manage_editAddablesPermissions(request)
 
         self.assertEqual(service.currentAddablesPermissions(), new_perms)
 
-    def test_60corruptpermissions(self):
-        """When permission settings doesn't match Silva logic, we
+    def test_corrupt_permissions(self):
+        """When permission settings doesn't match Silva logic,
         should get an value error.
         """
-        root = self.getRoot()
-        service = root.service_addablespermissions
+        service = self.root.service_addablespermissions
 
         # Set bad permissions
-        root.manage_permission('Add Silva Documents',
-                               ('Author', 'Manager'),
-                               0)
+        self.root.manage_permission(
+            'Add Silva Documents', ('Author', 'Manager'), 0)
 
         self.assertRaises(ValueError, service.currentAddablesPermissions)
 
 
-    def test_80uninstall(self):
-        """The uninstall method should remove the service.
-        """
-        root = self.getRoot()
-        service_ext = root.service_extensions
-        service_ext.uninstall('silva.security.addables')
-        self.failIf(service_ext.is_installed('silva.security.addables'))
-        self.failIf(hasattr(root.aq_base, 'service_addablespermissions'))
-
-
-
-import unittest
 def test_suite():
-
-    # Load Five ZCML
-    from Products import Five
-    zcml.load_config('meta.zcml', Five)
-    zcml.load_config('configure.zcml', Five)
-
-    # Load our ZCML, which add the extension as a Product
-    from silva.security import addables
-    zcml.load_config('configure.zcml', addables)
-
-    # Load the Zope Product
-    installPackage('silva.security.addables')
-
     # Run tests
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AddablesPermissionsTestCase))
