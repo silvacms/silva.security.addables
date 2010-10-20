@@ -7,6 +7,10 @@ import os
 
 version = '1.2dev'
 
+tests_require = [
+    'Products.Silva [test]',
+    ]
+
 setup(name='silva.security.addables',
       version=version,
       description="Configure which content type is addable for which Silva roles",
@@ -29,6 +33,13 @@ setup(name='silva.security.addables',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
+        'Products.Silva',
+        'five.grok',
         'setuptools',
+        'silva.core.conf',
+        'silva.core.interfaces',
+        'silva.core.services',
         ],
+      tests_require = tests_require,
+      extras_require = {'test': tests_require},
       )
