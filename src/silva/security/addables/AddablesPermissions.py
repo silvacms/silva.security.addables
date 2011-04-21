@@ -12,7 +12,7 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from five import grok
 from silva.core import conf as silvaconf
 from silva.core.services.base import SilvaService
-from silva.core.interfaces import ISilvaLocalService
+from silva.core.interfaces import ISilvaLocalService, IAddableContents
 
 
 class IAddablesPermissionsService(ISilvaLocalService):
@@ -50,11 +50,11 @@ class AddablesPermissionsService(SilvaService):
         """Edit permissions.
         """
         root = self.get_root()
-        for type in root.get_silva_addables_all():
-            permission = 'Add ' + type + 's'
+        for metatype in IAddableContents(root).get_all_addables():
+            permission = 'Add ' + metatype + 's'
             current = root.rolesOfPermission(permission)
             current = [r['name'] for r in current if r['selected']]
-            wanted = REQUEST.form[type]
+            wanted = REQUEST.form[metatype]
             authorized = False
             for role in self.manageableRoles():
                 if role == wanted:
@@ -64,7 +64,6 @@ class AddablesPermissionsService(SilvaService):
                 if authorized and not (role in current):
                     current.append(role)
             root.manage_permission(permission, current, 0)
-
 
     security.declareProtected(
         'View management screens', 'manageableRoles')
@@ -80,9 +79,8 @@ class AddablesPermissionsService(SilvaService):
         """
         root = self.get_root()
         settings = {}
-        for type in root.get_silva_addables_all():
-
-            permissions = root.rolesOfPermission('Add ' + type + 's')
+        for metatype in IAddableContents(root).get_all_addables():
+            permissions = root.rolesOfPermission('Add ' + metatype + 's')
             permissions = dict([(r['name'], '' != r['selected']) for r in permissions])
             winner = None
             for role in self.manageableRoles():
@@ -91,9 +89,9 @@ class AddablesPermissionsService(SilvaService):
                         winner = role
                 elif not (winner is None): # Sanaty check
                         msg = 'Invalid permission settings. %s can add %s but %s cannot.'
-                        raise ValueError, msg % (winner, type, role)
+                        raise ValueError, msg % (winner, metatype, role)
 
-            settings[type] = winner
+            settings[metatype] = winner
         return settings
 
 

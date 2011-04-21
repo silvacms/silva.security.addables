@@ -14,8 +14,7 @@ class SilvaSecurityAddablesLayer(SilvaLayer):
         'silva.security.addables',
         ]
 
-FunctionalLayer = SilvaSecurityAddablesLayer(
-    silva.security.addables, zcml_file='configure.zcml')
+FunctionalLayer = SilvaSecurityAddablesLayer(silva.security.addables)
 
 
 class AddablesPermissionsTestCase(unittest.TestCase):
@@ -34,8 +33,7 @@ class AddablesPermissionsTestCase(unittest.TestCase):
         """Install should provide a new service.
         """
         self.assertTrue(
-            hasattr(aq_base(self.root),
-                    'service_addablespermissions'))
+            hasattr(aq_base(self.root), 'service_addablespermissions'))
 
     def test_retrieve(self):
         """There is utilities which retrieve current settings.
@@ -45,12 +43,12 @@ class AddablesPermissionsTestCase(unittest.TestCase):
         expected_roles = ('Author', 'Editor', 'ChiefEditor', 'Manager')
         self.assertEqual(service.manageableRoles(), expected_roles)
 
-        expected_perms = {'Silva AutoTOC': 'Author',
+        expected_perms = {'Mockup VersionedContent': 'Author',
+                          'Silva AutoTOC': 'Author',
                           'Silva Link': 'Author',
                           'Silva Folder': 'Author',
                           'Silva Image': 'Author',
                           'Silva Publication': 'Editor',
-                          'Silva Document': 'Author',
                           'Silva File': 'Author',
                           'Silva Find': 'Editor',
                           'Silva Ghost Folder': 'Editor',
@@ -65,12 +63,12 @@ class AddablesPermissionsTestCase(unittest.TestCase):
         """
         service = self.root.service_addablespermissions
 
-        new_perms = {'Silva AutoTOC': 'Manager',
+        new_perms = {'Mockup VersionedContent': 'Author',
+                     'Silva AutoTOC': 'Manager',
                      'Silva Link': 'Author',
                      'Silva Folder': 'Author',
                      'Silva Image': 'Author',
                      'Silva Publication': 'Editor',
-                     'Silva Document': 'Author',
                      'Silva Find': 'ChiefEditor',
                      'Silva File': 'Author',
                      'Silva CSV Source': 'Author',
@@ -91,7 +89,7 @@ class AddablesPermissionsTestCase(unittest.TestCase):
 
         # Set bad permissions
         self.root.manage_permission(
-            'Add Silva Documents', ('Author', 'Manager'), 0)
+            'Add Silva Files', ('Author', 'Manager'), 0)
 
         self.assertRaises(ValueError, service.currentAddablesPermissions)
 
