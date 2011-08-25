@@ -50,9 +50,7 @@ class AddablesPermissionsTestCase(unittest.TestCase):
                           'Silva Image': 'Author',
                           'Silva Publication': 'Editor',
                           'Silva File': 'Author',
-                          'Silva Find': 'Editor',
                           'Silva Ghost Folder': 'Editor',
-                          'Silva CSV Source': 'Author',
                           'Silva Indexer': 'Editor',
                           'Silva Ghost': 'Author'}
 
@@ -69,9 +67,7 @@ class AddablesPermissionsTestCase(unittest.TestCase):
                      'Silva Folder': 'Author',
                      'Silva Image': 'Author',
                      'Silva Publication': 'Editor',
-                     'Silva Find': 'ChiefEditor',
                      'Silva File': 'Author',
-                     'Silva CSV Source': 'Author',
                      'Silva Ghost Folder': 'Editor',
                      'Silva Indexer': 'ChiefEditor',
                      'Silva Ghost': 'Author'}
