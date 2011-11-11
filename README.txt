@@ -22,7 +22,7 @@ following section::
   eggs +=
         silva.security.addables
 
-  zcml += 
+  zcml +=
         silva.security.addables
 
 If the section ``instance`` wasn't already in the configuration file,
@@ -46,8 +46,8 @@ responsible to load the extension and should only contain this::
 Latest version
 ==============
 
-The latest version is available in a `Subversion repository
-<https://svn.infrae.com/silva.security.addables/trunk#egg=silva.security.addables-dev>`_.
+You can find the code in a Mercurial repository:
+https://hg.infrae.com/silva.security.addables/.
 
 .. _Infrae SVN: https://svn.infrae.com/buildout/silva/
 .. _Paster: https://svn.infrae.com/buildout/silva/INSTALL.txt
