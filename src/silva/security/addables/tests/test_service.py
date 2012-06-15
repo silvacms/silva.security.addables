@@ -43,16 +43,18 @@ class AddablesPermissionsTestCase(unittest.TestCase):
         expected_roles = ('Author', 'Editor', 'ChiefEditor', 'Manager')
         self.assertEqual(service.manageableRoles(), expected_roles)
 
-        expected_perms = {'Mockup VersionedContent': 'Author',
-                          'Silva AutoTOC': 'Author',
-                          'Silva Link': 'Author',
-                          'Silva Folder': 'Author',
-                          'Silva Image': 'Author',
-                          'Silva Publication': 'Editor',
-                          'Silva File': 'Author',
-                          'Silva Ghost Folder': 'Editor',
-                          'Silva Indexer': 'Editor',
-                          'Silva Ghost': 'Author'}
+        expected_perms = {
+            'Mockup Asset': 'Author',
+            'Mockup VersionedContent': 'Author',
+            'Silva AutoTOC': 'Author',
+            'Silva Link': 'Author',
+            'Silva Folder': 'Author',
+            'Silva Image': 'Author',
+            'Silva Publication': 'Editor',
+            'Silva File': 'Author',
+            'Silva Ghost Folder': 'Editor',
+            'Silva Indexer': 'Editor',
+            'Silva Ghost': 'Author'}
 
         self.assertEqual(service.currentAddablesPermissions(), expected_perms)
 
@@ -61,16 +63,18 @@ class AddablesPermissionsTestCase(unittest.TestCase):
         """
         service = self.root.service_addablespermissions
 
-        new_perms = {'Mockup VersionedContent': 'Author',
-                     'Silva AutoTOC': 'Manager',
-                     'Silva Link': 'Author',
-                     'Silva Folder': 'Author',
-                     'Silva Image': 'Author',
-                     'Silva Publication': 'Editor',
-                     'Silva File': 'Author',
-                     'Silva Ghost Folder': 'Editor',
-                     'Silva Indexer': 'ChiefEditor',
-                     'Silva Ghost': 'Author'}
+        new_perms = {
+            'Mockup Asset': 'Author',
+            'Mockup VersionedContent': 'Author',
+            'Silva AutoTOC': 'Manager',
+            'Silva Link': 'Author',
+            'Silva Folder': 'Author',
+            'Silva Image': 'Author',
+            'Silva Publication': 'Editor',
+            'Silva File': 'Author',
+            'Silva Ghost Folder': 'Editor',
+            'Silva Indexer': 'ChiefEditor',
+            'Silva Ghost': 'Author'}
 
         request = TestRequest(form=new_perms, REQUEST_METHOD='POST')
         service.manage_editAddablesPermissions(request)
