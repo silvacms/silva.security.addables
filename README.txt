@@ -7,7 +7,7 @@ which roles have the right to add which content type.
 It's ensure as well that current permissions are set correctly
 according the Silva logic.
 
-It requires at least Silva 2.0.
+It requires at least Silva 3.0.
 
 Installation
 ============
@@ -18,7 +18,6 @@ buildout configuration file ``buildout.cfg`` to add or edit the
 following section::
 
   [instance]
-
   eggs +=
         silva.security.addables
 

@@ -1,15 +1,15 @@
 Changelog
 =========
 
-3.0.1 (unreleased)
+3.0.1 (2012/09/24)
 ------------------
 
-* ...
+* Update tests to work with Silva 3.0.
 
 3.0 (2011/11/11)
 ----------------
 
-* Updare code for Zope 2.13 and Silva 3.0.
+* Update code for Zope 2.13 and Silva 3.0.
 
 1.1 (2010/10/18)
 ----------------
