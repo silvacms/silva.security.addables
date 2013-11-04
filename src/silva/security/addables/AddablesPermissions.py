@@ -7,15 +7,22 @@ from AccessControl.requestmethod import postonly
 from App.class_init import InitializeClass
 
 from Products.Silva import roleinfo
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
+from zope.component import getUtility
 
 from five import grok
 from silva.core import conf as silvaconf
-from silva.core.services.base import SilvaService
+from silva.core.interfaces import ISilvaConfigurableService
 from silva.core.interfaces import ISilvaLocalService, IAddableContents
+from silva.core.messages.interfaces import IMessageService
+from silva.core.services.base import SilvaService
+from silva.translations import translate as _
+from silva.core.views import views as silvaviews
+from silva.ui import rest
 
 
-class IAddablesPermissionsService(ISilvaLocalService):
+class IAddablesPermissionsService(
+    ISilvaLocalService,
+    ISilvaConfigurableService):
     pass
 
 
@@ -33,15 +40,8 @@ class AddablesPermissionsService(SilvaService):
     security = ClassSecurityInfo()
 
     manage_options = (
-        {'label':'Edit', 'action':'manage_editForm'},
+        {'label':'Edit', 'action':'manage_permissions'},
         ) + SilvaService.manage_options
-
-    security.declareProtected('View management screens',
-                              'manage_editForm')
-    manage_editForm = PageTemplateFile(
-        'www/addablesPermissionsServiceEdit', globals(),
-        __name__='manage_editForm')
-
 
     security.declareProtected(
         'View management screens', 'manage_editAddablesPermissions')
@@ -88,11 +88,42 @@ class AddablesPermissionsService(SilvaService):
                     if winner is None:
                         winner = role
                 elif not (winner is None): # Sanaty check
-                        msg = 'Invalid permission settings. %s can add %s but %s cannot.'
-                        raise ValueError, msg % (winner, metatype, role)
+                    msg = 'Invalid permission settings. %s can add %s but %s cannot.'
+                    raise ValueError, msg % (winner, metatype, role)
 
             settings[metatype] = winner
         return settings
 
 
 InitializeClass(AddablesPermissionsService)
+
+
+class ManagePermissions(silvaviews.ZMIView):
+    grok.context(AddablesPermissionsService)
+    grok.name('manage_permissions')
+    grok.require('zope2.ViewManagementScreens')
+
+    def update(self):
+        super(ManagePermissions, self).update()
+        self.status = None
+        if 'update' in self.request:
+            self.context.manage_editAddablesPermissions(self.request)
+            self.status = _("Permissions updated.")
+
+
+class ConfigurePermissions(rest.FormWithTemplateREST):
+    grok.adapts(rest.Screen, AddablesPermissionsService)
+    grok.name('admin')
+    grok.require('zope2.ViewManagementScreens')
+
+    def get_menu_title(self):
+        return _('Addables permissions configuration')
+
+    def update(self):
+        super(ConfigurePermissions, self).update()
+        if 'update' in self.request:
+            self.context.manage_editAddablesPermissions(self.request)
+            service = getUtility(IMessageService)
+            service.send(_(u"Permissions updated."),
+                         self.request,
+                         namespace='feedback')
