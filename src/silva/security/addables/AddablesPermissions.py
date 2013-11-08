@@ -54,7 +54,10 @@ class AddablesPermissionsService(SilvaService):
             permission = 'Add ' + metatype + 's'
             current = root.rolesOfPermission(permission)
             current = [r['name'] for r in current if r['selected']]
-            wanted = REQUEST.form[metatype]
+            wanted = REQUEST.form.get(metatype)
+            if wanted is None:
+                # metatype not in request, just ignore it.
+                continue
             authorized = False
             for role in self.manageableRoles():
                 if role == wanted:

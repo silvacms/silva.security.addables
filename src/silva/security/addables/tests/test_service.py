@@ -45,6 +45,7 @@ class AddablesPermissionsTestCase(unittest.TestCase):
 
         expected_perms = {
             'Mockup Asset': 'Author',
+            'Mockup Non Publishable': 'Author',
             'Mockup VersionedContent': 'Author',
             'Silva AutoTOC': 'Author',
             'Silva Link': 'Author',
@@ -52,6 +53,7 @@ class AddablesPermissionsTestCase(unittest.TestCase):
             'Silva Image': 'Author',
             'Silva Publication': 'Editor',
             'Silva File': 'Author',
+            'Silva Ghost Asset': 'Author',
             'Silva Ghost Folder': 'Editor',
             'Silva Indexer': 'Editor',
             'Silva Ghost': 'Author'}
@@ -65,6 +67,7 @@ class AddablesPermissionsTestCase(unittest.TestCase):
 
         new_perms = {
             'Mockup Asset': 'Author',
+            'Mockup Non Publishable': 'Editor',
             'Mockup VersionedContent': 'Author',
             'Silva AutoTOC': 'Manager',
             'Silva Link': 'Author',
@@ -72,6 +75,7 @@ class AddablesPermissionsTestCase(unittest.TestCase):
             'Silva Image': 'Author',
             'Silva Publication': 'Editor',
             'Silva File': 'Author',
+            'Silva Ghost Asset': 'Author',
             'Silva Ghost Folder': 'Editor',
             'Silva Indexer': 'ChiefEditor',
             'Silva Ghost': 'Author'}
@@ -88,9 +92,7 @@ class AddablesPermissionsTestCase(unittest.TestCase):
         service = self.root.service_addablespermissions
 
         # Set bad permissions
-        self.root.manage_permission(
-            'Add Silva Files', ('Author', 'Manager'), 0)
-
+        self.root.manage_permission('Add Silva Files', ('Author', 'Manager'), 0)
         self.assertRaises(ValueError, service.currentAddablesPermissions)
 
 
