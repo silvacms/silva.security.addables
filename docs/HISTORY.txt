@@ -1,10 +1,12 @@
 Changelog
 =========
 
-3.0.2 (unreleased)
+3.0.2 (2013/12/16)
 ------------------
 
-* ...
+* Add an installer that create the service for the user.
+
+* The configuration is available though SMI.
 
 3.0.1 (2012/09/24)
 ------------------
